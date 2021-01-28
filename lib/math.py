@@ -36,33 +36,21 @@ def standard_error(array, manual=False):
         size = len(array)
         se_ = standard_deviation(array, True) / (size**0.5) #ecart type / racine de la taille de l'echantillon
     return np.std(array) / np.size(array)**0.5 if not manual else float(se_)
-    #return standard_deviation(array) / (np.size(array)**0.5) if not manual else float(se_)
-
-######
 
 
 def standard_deviation(array, manual=False):
     """Return standard deviation (Ecart type) of a numpy array"""
     if manual:
-        moy = mean(array)
-        size = len(array)
-        std = 0
-        for elem in array:
-            std = std + ((elem - moy)**2) #somme de elem - moyenne au carre
-        std = (std / size)**0.5
+        std = variance(array, True)**0.5
     return np.std(array) if not manual else float(std)
     
 def variance(array, manual=False):
     if manual:
         var_ = 0
-        moy = mean(array, True)
+        total = 0
         size = len(array)
-        ecart = 0
+        moy = mean(array)
         for elem in array:
-            ecart = ecart + ((elem - moy)**2)
-        var_ = (ecart / size)**0.5
-    return np.std(array) / np.mean(array) if not manual else var_
-    #return standard_deviation(array) / mean(array) if not manual else var_
-
-
-########
+            total = total + ((elem - moy)**2)
+        var_ = total / size
+    return np.var(array) if not manual else float(var_)
