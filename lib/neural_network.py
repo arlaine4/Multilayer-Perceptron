@@ -9,6 +9,7 @@ class Multilayer_Perceptron():
         self.input_layer = self.fill_input_layer(inputs, self.input_layer) #remplissage input layer
         self.bias_input = 1
         self.hidden_layers = np.zeros((nb_hidden_layers, nb_hidden_elems)) #creation matrice de hidder layers
+        #self.output_layers = np.zeros((nb_output_elems))
 
     #TODO
     def fill_input_layer(self, inputs, input_layer):
@@ -18,6 +19,10 @@ class Multilayer_Perceptron():
             input_layer[i] = neuron
         return input_layer
 
+    def fill_hidden_layer(self, weights, bias, index):
+        #TODO
+        pass
+    
 
 class Perceptron():
     #TODO
@@ -35,7 +40,6 @@ class Perceptron():
         elif not input_layer:
             self.weight = weighted_sum(weights, bias)
 
-
     def set_bias(self, bias):
         self.bias = bias
 
@@ -52,8 +56,8 @@ def sigmoid(index_e, w_sum, bias):
     return sig
 
 def ReLU(z):
+    return 0 if z < 0 else z
     #return 0 if z < 0 else return 1
-    return 0 if z < 0 else return z
 
 #                                                                #
 #----------------------------------------------------------------#
