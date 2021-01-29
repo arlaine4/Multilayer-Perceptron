@@ -54,3 +54,6 @@ def variance(array, manual=False):
             total = total + ((elem - moy)**2)
         var_ = total / size
     return np.var(array) if not manual else float(var_)
+
+def log(array, base=10, manual=False):
+    return np.log(array)
