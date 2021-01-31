@@ -2,7 +2,15 @@ import numpy as np
 
 """Manual if you don't want to use numpy methods to get math values"""
 
-def mean(array, manual=False):
+def scale(value, range_ = [0, 1]):
+    while value < range_[0] or value > range_[1]:
+        if value > range_[1]:
+            value /= 10
+        else:
+            value *= 10
+    return value
+
+def mean_(array, manual=False):
     """Mean of a numpy array"""
     if manual:
         total_size = len(array)
