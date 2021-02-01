@@ -22,12 +22,12 @@ class MultilayerPerceptron():
 
     def run(self):
         self.hidden_layers[0] = self.create_hidden_layer(self.input_weights, self.bias[0])
+        #self.hidden_z[0] = self.get_neuron_output()
     
     def create_hidden_layer(self, weights, bias):
         new_layer = np.zeros((1, self.nb_hidden_elems))
         for i in range(len(new_layer[0])):
             new_layer[0][i] = self.compute_previous_weights(i, weights)
-            #new_layer[0][i] = ((weights[0][i] * i) + (weights[0][i + 10] * i + 10) + (weights[0][i + 20] * i + 10)) + bias
         return new_layer
 
     def compute_previous_weights(self, i, W):
