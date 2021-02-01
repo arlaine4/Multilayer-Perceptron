@@ -23,6 +23,7 @@ if __name__ == "__main__":
             else:
                 pass
     test = nn.MultilayerPerceptron(reader, 2, 2)
+    test.__str__()
     
     #test_w = [0.3, 1.2, -0.4, 1.1]
     #print("weighted sum for {} = {}".format(test_w, nn.weighted_sum(test_w, 0.75)))

@@ -2,14 +2,6 @@ import numpy as np
 
 """Manual if you don't want to use numpy methods to get math values"""
 
-def scale(value, range_ = [0, 1]):
-    while value < range_[0] or value > range_[1]:
-        if value > range_[1]:
-            value /= 10
-        else:
-            value *= 10
-    return value
-
 def mean_(array, manual=False):
     """Mean of a numpy array"""
     if manual:
@@ -21,7 +13,7 @@ def mean_(array, manual=False):
         #print("{:.25f}".format(total[0]))
     return np.mean(array) if not manual else total[0]
 
-def max(array, manual=False):
+def max_(array, manual=False):
     """Return maximum value of a numpy array"""
     if manual:
         max_ = array[0]
@@ -29,7 +21,7 @@ def max(array, manual=False):
             max_ = elem if elem > max_ else max_
     return np.amax(array) if not manual else max_[0]
 
-def min(array, manual=False):
+def min_(array, manual=False):
     """Return minimal value of a numpy array"""
     if manual:
         min_ = array[0]

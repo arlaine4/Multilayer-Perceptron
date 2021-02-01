@@ -2,78 +2,27 @@ import pandas as pd
 import numpy as np
 from copy import deepcopy ##
 from . import math
-
-"""class Multilayer_Perceptron():
-    #TODO
-    def __init__(self, nb_inputs, nb_hidden_layers, nb_hidden_elems, nb_outputs, inputs):
-        self.input_layer = np.zeros((1, nb_inputs), dtype=np.float64) #creation input layer
-        self.input_layer = self.fill_input_layer(inputs, self.input_layer) #remplissage input layer
-        self.bias_input = 1
-        self.hidden_layers = np.zeros((nb_hidden_layers, nb_hidden_elems)) #creation matrice de hidden layers
-        self.input_matrix = None
-        self.hidden_matrix = None
-        #self.output_layers = np.zeros((nb_output_elems))
-
-    #TODO
-    def run_network(self):
-        pass
-
-    #TODO
-    def fill_weight_matrix(self, nb_elem):
-        pass
-
-    #TODO
-    def fill_input_layer(self, inputs, input_layer):
-        for i in range(len(input_layer)):
-            neuron = Perceptron(inputs[i])
-            neuron.init_neuron(inputs[i], self.bias_input) #init chaque neuronne de la input layer with same bias and weight correspondant a chaque input
-            input_layer[i] = neuron
-        return input_layer
-
-    def fill_hidden_layer(self, weights, bias, index):
-        #TODO
-        pass"""
+from sklearn import preprocessing
 
 class MultilayerPerceptron():
     def __init__(self, inputs, nb_hidden_layers, nb_outputs):
         self.nb_hidden_layers = nb_hidden_layers
         self.init_input_layer(inputs)
-        self.bias = [0 for x in range(nb_hidden_layers + 1)]
+        self.bias = 0
+        self.init_bias(nb_hidden_layers + 1)
 
-    def run_network(self):
-        nb_layers = self.nb_hidden_layers + 1
-        id_layer = 0
-        pass
+    def init_bias(self, nb_layers):
+        self.bias = [1 for x in range(nb_layers)]
 
     def init_input_layer(self, inputs):
-        mean_all = inputs.mean(axis=0)
-        self.input_layer = np.zeros((1, len(mean_all)))
-        for i in range(len(mean_all)):
-            value = math.scale(mean_all[i])
-            self.input_layer[0][i] = value
-        print(self.input_layer)
-
-"""class Perceptron():
-    #TODO
-    def __init__(self):
-        self.z = 0
-        self.bias = 0
-        self.weight = 0
-
-    #TODO
-    def init_neuron(self, weights, bias, input_layer=False):
-        self.set_bias(bias)
-        #Input Layer is a bool that indicates if we are undergoing init of input layer or not
-        if input_layer:
-            self.weight = weights
-        elif not input_layer:
-            self.weight = weighted_sum(weights, bias)
-
-    def set_bias(self, bias):
-        self.bias = bias
-
+        m = inputs.mean(axis=0) #tmp axis assignation for input layer numpy array creation
+        self.input_layer = np.zeros((1, len(m)))
+        mean_all = preprocessing.MinMaxScaler(feature_range = (0, 1)) #declaration of MIN MAX sclaer
+        new_mean_all = mean_all.fit_transform(inputs) #scaled features
+        self.input_layer = new_mean_all[0]
+    
     def __str__(self):
-        print("\033[1mWeight\033[0m : {}\033[1m\nBias\033[0m : {}\n\033[1mZ\033[0m : {}".format(self.weight, self.bias, self.z))"""
+        print("Input layer :\n\n{}\n\nBiases :\n\n{}".format(self.input_layer, self.bias))
 
 #----------------------------------------------------------------#
 #                   Activation Functions                         #
