@@ -3,7 +3,7 @@ import csv
 import pandas as pd
 import sys
 from copy import deepcopy
-from lib import utils, math, neural_network as nn
+from lib import utils, maths, neural_network as nn
 
 if __name__ == "__main__":
     args = utils.arg_parse()
@@ -12,7 +12,9 @@ if __name__ == "__main__":
         tmp_reader = deepcopy(reader)
         c = 'black'
         for k in reader:
-            if "ID" not in k: #Pass some useless histographs to show like ID
+            if "ID" in k or "ID Mean" in k or "ID Worst" in k:
+                pass
+            else:
                 if args.color:
                     c = utils.parse_color_hist(args.color)
                 tmp_reader[str(k)].hist(color=c, alpha=0.5)
@@ -20,9 +22,8 @@ if __name__ == "__main__":
                 plt.xlabel("Value")
                 plt.ylabel("Number of elements")
                 plt.show()
-            else:
-                pass
-    test = nn.MultilayerPerceptron(reader, 2, 2)
+    test = nn.MultilayerPerceptron(reader, 2, 10, 2)
+    test.run()
     test.__str__()
     
     #test_w = [0.3, 1.2, -0.4, 1.1]

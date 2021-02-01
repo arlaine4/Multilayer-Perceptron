@@ -1,28 +1,61 @@
 import pandas as pd
 import numpy as np
-from copy import deepcopy ##
-from . import math
+from . import maths
+import math
+import random
 from sklearn import preprocessing
 
 class MultilayerPerceptron():
-    def __init__(self, inputs, nb_hidden_layers, nb_outputs):
+    def __init__(self, inputs, nb_hidden_layers, nb_hidden_elems, nb_outputs):
         self.nb_hidden_layers = nb_hidden_layers
+        self.nb_hidden_elems = nb_hidden_elems
+        self.input_weights = np.zeros((1, np.size(inputs)))
         self.init_input_layer(inputs)
-        self.bias = 0
-        self.init_bias(nb_hidden_layers + 1)
 
-    def init_bias(self, nb_layers):
-        self.bias = [1 for x in range(nb_layers)]
+        self.hidden_layers = np.zeros((self.nb_hidden_layers, self.nb_hidden_elems))
+
+        self.bias = [1 for x in range(self.nb_hidden_layers + 1)]
+        self.epoch = 25000
+        self.loss = 0.0
+
+        self.nb_outputs = nb_outputs
+
+    def run(self):
+        self.hidden_layers[0] = self.create_hidden_layer(self.input_weights, self.bias[0])
+    
+    def create_hidden_layer(self, weights, bias):
+        new_layer = np.zeros((1, self.nb_hidden_elems))
+        for i in range(len(new_layer[0])):
+            new_layer[0][i] = self.compute_previous_weights(i, weights)
+            #new_layer[0][i] = ((weights[0][i] * i) + (weights[0][i + 10] * i + 10) + (weights[0][i + 20] * i + 10)) + bias
+        return new_layer
+
+    def compute_previous_weights(self, i, W):
+        computed = (W[0][i] * i) + (W[0][i + 10] * (i + 10)) + (W[0][i + 20] * (i + 20))
+        return computed
 
     def init_input_layer(self, inputs):
         m = inputs.mean(axis=0) #tmp axis assignation for input layer numpy array creation
         self.input_layer = np.zeros((1, len(m)))
-        mean_all = preprocessing.MinMaxScaler(feature_range = (0, 1)) #declaration of MIN MAX sclaer
+
+        #------------------PowerTransform yeo-johnson------------------------#
+
+        #mean_all = preprocessing.PowerTransformer()
+        #mean_all = mean_all.fit(inputs)
+        #mean_all = mean_all.transform(inputs)
+
+        #--------------------------------------------------------------------#
+
+        mean_all = preprocessing.MinMaxScaler(feature_range = (0, 1)) #declaration of MIN MAX scaler
         new_mean_all = mean_all.fit_transform(inputs) #scaled features
+
         self.input_layer = new_mean_all[0]
-    
+        self.input_weights = xavier_init(np.size(self.input_layer), self.nb_hidden_elems)
+
     def __str__(self):
-        print("Input layer :\n\n{}\n\nBiases :\n\n{}".format(self.input_layer, self.bias))
+        print("\033[1;3;4mInput layer\033[0m :\n\n{}\n\n\033[1;3;4mBiases\033[0m :\n\n{}\n\n\033[1;3;4mInput weights\033[0m : \n\n{} \
+                \n\n\033[1;3;4mFirst Hidden layer\033[0m : \n\n{}\n\n" \
+                .format(self.input_layer, self.bias, self.input_weights, self.hidden_layers[0]))
 
 #----------------------------------------------------------------#
 #                   Activation Functions                         #
@@ -34,25 +67,19 @@ def sigmoid(index_e, w_sum, bias):
     return sig
 
 def ReLU(z):
-    return 0 if z < 0 else z
-    #return 0 if z < 0 else return 1
+    return 0 if z < 0 else 1
 
 #                                                                #
 #----------------------------------------------------------------#
 
-def create_multilayer_perceptron(nb_hidden_layers, inputs, size_output_layer):
-    pass
-
-def create_perceptron(inputs, weights, activation_func, bias):
-    bias = 1    
-
-def xavier_init(layer, previous_layer):
-    W = np.random.randn((np.size(layer), np.size(previous_layer)) * (np.sqrt(2 / (np.size(previous_layer) + np.size(layer)))))
-    return W
-
 def weighted_sum(weights, bias):
-    weighted_sum = 0
-    for i in range(len(weights)):
-        weighted_sum += weights[i] * i
-    weighted_sum += 1 * bias
-    return weighted_sum
+    sigma = 0
+    for i in range(len(weights - 1)):
+        sigma = sigma + (weights[i] * i)
+    sigma += bias
+    return sigma
+
+def xavier_init(size_layer, size_previous_layer):
+    W = np.random.randn(1, size_layer) * np.sqrt(2 / size_previous_layer + size_layer)
+    #W = np.random.randn((size_layer), size_previous_layer) * (np.sqrt(2 / (size_previous_layer + size_layer)))
+    return W
