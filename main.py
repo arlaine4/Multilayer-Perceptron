@@ -28,6 +28,7 @@ if __name__ == "__main__":
         values[i] = 0 if reader['Diagnosis'][i] == 'B' else 1
     reader['Diagnosis'] = values
     test = nn.NeuralNetwork(reader, 2, 10, 2)
+    test.run()
     test.__str__()
     
     #test_w = [0.3, 1.2, -0.4, 1.1]

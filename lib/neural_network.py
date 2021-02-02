@@ -7,26 +7,38 @@ from sklearn import preprocessing
 
 class   NeuralNetwork():
     def __init__(self, inputs, nb_layers, nb_hidden_elems, nb_outputs):
-        self.input_layer = np.zeros((1, len(inputs)))
-        self.input_weights = np.zeros((1, np.size(inputs)))
+        self.input_layer = np.zeros((np.size(inputs), 1))
+        self.input_weights = np.zeros((np.size(inputs), 1))
         self.init_input_layer(inputs, nb_hidden_elems)
-        self.weights_ih = np.zeros((len(inputs), nb_hidden_elems))
-        #init self.weights_ih
-        #init biases
+        self.weights_ih = np.zeros((nb_hidden_elems, np.size(self.input_layer)))
+        self.bias_h = np.ones((nb_hidden_elems, 1), dtype=np.int16)
+        self.hidden_layers = np.zeros((nb_layers, nb_hidden_elems))
 
     def init_input_layer(self, inputs, nb_hidden_elems):
         m = inputs.mean(axis=0)
-        self.input_layer = np.zeros((1, len(m)))
+        self.input_layer = np.zeros((1, np.size(m)))
         mean_all = preprocessing.PowerTransformer()
         mean_all = mean_all.fit(inputs)
         mean_all = mean_all.transform(inputs)
         mean_all = preprocessing.MinMaxScaler(feature_range=(0, 1))
         new_mean_all = mean_all.fit_transform(inputs)
         self.input_layer = new_mean_all[0]
+        self.input_layer = self.input_layer.reshape(31, 1)
         self.input_weights = xavier_init(np.size(self.input_layer), nb_hidden_elems)
 
+    def init_weights_ih(self):
+        self.weights_ih = self.input_layer @ self.input_weights
+        print(self.weights_ih.shape)
+
+    def run(self):
+        #for i in range(len(np.size(self.hidden_layers))):
+        self.init_weights_ih()
+        #self.hidden_layers[0] = self.input_weights @ np.array((1, range(self.
+
     def __str__(self):
-        print("\033[1;3;4mInput Layer \033[0m:\n\n{}\n\n\033[1;3;4mInput Weights\033[0m : \n\n{}\n\n".format(self.input_layer, self.input_weights))
+        print("\033[1;3;4mInput Layer\033[0m :\n\n{}\n\n\033[1;3;4mInput Weights\033[0m : \n\n{}\n\n".format(self.input_layer, self.input_weights))
+        print("\033[1;3;4mBias\033[0m : \n\n{}\n\n".format(self.bias_h.T))
+        print("\033[1;3;4mHidden Layers\033[0m :\n\n{}\n\n".format(self.hidden_layers.T))
 
 """class MultilayerPerceptron():
     def __init__(self, inputs, nb_hidden_layers, nb_hidden_elems, nb_outputs):
