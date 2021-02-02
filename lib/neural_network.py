@@ -5,7 +5,30 @@ import math
 import random
 from sklearn import preprocessing
 
-class MultilayerPerceptron():
+class   NeuralNetwork():
+    def __init__(self, inputs, nb_layers, nb_hidden_elems, nb_outputs):
+        self.input_layer = np.zeros((1, len(inputs)))
+        self.input_weights = np.zeros((1, np.size(inputs)))
+        self.init_input_layer(inputs, nb_hidden_elems)
+        self.weights_ih = np.zeros((len(inputs), nb_hidden_elems))
+        #init self.weights_ih
+        #init biases
+
+    def init_input_layer(self, inputs, nb_hidden_elems):
+        m = inputs.mean(axis=0)
+        self.input_layer = np.zeros((1, len(m)))
+        mean_all = preprocessing.PowerTransformer()
+        mean_all = mean_all.fit(inputs)
+        mean_all = mean_all.transform(inputs)
+        mean_all = preprocessing.MinMaxScaler(feature_range=(0, 1))
+        new_mean_all = mean_all.fit_transform(inputs)
+        self.input_layer = new_mean_all[0]
+        self.input_weights = xavier_init(np.size(self.input_layer), nb_hidden_elems)
+
+    def __str__(self):
+        print("\033[1;3;4mInput Layer \033[0m:\n\n{}\n\n\033[1;3;4mInput Weights\033[0m : \n\n{}\n\n".format(self.input_layer, self.input_weights))
+
+"""class MultilayerPerceptron():
     def __init__(self, inputs, nb_hidden_layers, nb_hidden_elems, nb_outputs):
         self.nb_hidden_layers = nb_hidden_layers
         self.nb_hidden_elems = nb_hidden_elems
@@ -55,7 +78,7 @@ class MultilayerPerceptron():
     def __str__(self):
         print("\033[1;3;4mInput layer\033[0m :\n\n{}\n\n\033[1;3;4mBiases\033[0m :\n\n{}\n\n\033[1;3;4mInput weights\033[0m : \n\n{} \
                 \n\n\033[1;3;4mFirst Hidden layer\033[0m : \n\n{}\n\n" \
-                .format(self.input_layer, self.bias, self.input_weights, self.hidden_layers[0]))
+                .format(self.input_layer, self.bias, self.input_weights, self.hidden_layers[0]))"""
 
 #----------------------------------------------------------------#
 #                   Activation Functions                         #

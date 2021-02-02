@@ -12,7 +12,7 @@ if __name__ == "__main__":
         tmp_reader = deepcopy(reader)
         c = 'black'
         for k in reader:
-            if "ID" in k or "ID Mean" in k or "ID Worst" in k:
+            if "ID" in k:
                 pass
             else:
                 if args.color:
@@ -22,8 +22,12 @@ if __name__ == "__main__":
                 plt.xlabel("Value")
                 plt.ylabel("Number of elements")
                 plt.show()
-    test = nn.MultilayerPerceptron(reader, 2, 10, 2)
-    test.run()
+    del reader['ID'] ##
+    values = list(range(len(reader['Diagnosis'])))
+    for i in range(len(reader['Diagnosis'])):
+        values[i] = 0 if reader['Diagnosis'][i] == 'B' else 1
+    reader['Diagnosis'] = values
+    test = nn.NeuralNetwork(reader, 2, 10, 2)
     test.__str__()
     
     #test_w = [0.3, 1.2, -0.4, 1.1]

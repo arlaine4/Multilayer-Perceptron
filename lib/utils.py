@@ -10,16 +10,13 @@ def arg_parse():
     return options
 
 def get_csv_infos():
-    names = ['ID', 'Diagnosis', 'Radius', 'Texture', 'Perimeter', 'Area', 'Smoothness', 'Compactness', \
-            'Concavity', 'Concave points', 'Symetry', 'Fractal Dimension']
-    lst_names = list()
-    for i in range(2, 32):
-        if i >= 2 and i < 13:
-            lst_names.append(names[i - 10] + " Mean")
-        elif i >= 13 and i < 23:
-            lst_names.append(names[i - 20] + " SE (standard error)")
-        else:
-            lst_names.append(names[i - 30] + " Worst")
+    lst_names = ['ID', 'Diagnosis', 'Radius', 'Texture', 'Perimeter', 'Area', 'Smoothness', 'Compactness', \
+            'Concavity', 'Concave points', 'Symetry', 'Fractal Dimension', 'Radius Mean', \
+            'Texture Mean', 'Perimeter Mean', 'Area Mean', 'Smoothness Mean', 'Compactness Mean', 'Concavity Mean', \
+            'Concave Points Mean', 'Symetry Mean', 'Fractal Dimension Mean', 'Radius Worst', \
+            'Texture Worst', 'Perimeter Worst', 'Area Worst', 'Smoothness Worst', 'Compactness Worst', 'Concavity Worst', \
+            'Concave Points Worst', 'Symetry Worst', 'Fractal Dimension Worst']
+    reader = pd.read_csv("data.csv", names = lst_names)
     try:
         reader = pd.read_csv("data.csv", names=lst_names)
     except:
