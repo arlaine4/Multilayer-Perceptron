@@ -3,7 +3,8 @@ import csv
 import pandas as pd
 import sys
 from copy import deepcopy
-from lib import utils, maths, neural_network as nn
+#from lib import utils, maths, neural_network as nn
+from lib import utils, maths, neural as nn
 
 if __name__ == "__main__":
     args = utils.arg_parse()
@@ -29,8 +30,13 @@ if __name__ == "__main__":
         values[i] = 0 if reader['Diagnosis'][i] == 'B' else 1
         desired_outputs.append(values[i])
     reader['Diagnosis'] = values
-    test = nn.NeuralNetwork(reader, 2, 10, 2, desired_outputs)
-    test.__str__()
+
+    test = nn.NeuralNetwork()
+    test.add(layers.layer(10, 'ReLU')
+    test.add(layers.layer(10, 'ReLU')
+    test.add(layers.layer(2, 'sigmoid')
+    test.set_learning_rate(0.8)
+    #test = nn.NeuralNetwork(reader, 2, 10, 2, desired_outputs)
     #test = nn.NeuralNetwork(reader, 2, 10, 2)
     #test.run()
     #test.__str__()

@@ -40,6 +40,8 @@ class   NeuralNetwork():
         print(self.weights_ih.shape)
 
     def run(self):
+        for epoch in range(20000):
+            input_hi
         self.init_weights_ih()
 
     def __str__(self):
@@ -62,7 +64,7 @@ def ReLU(z):
 
 def weighted_sum(weights, bias):
     sigma = 0
-    for i in range(len(weights - 1)):
+    for i in range(1, len(weights)):
         sigma = sigma + (weights[i] * i)
     sigma += bias
     return sigma
