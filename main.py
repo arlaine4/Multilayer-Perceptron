@@ -24,12 +24,16 @@ if __name__ == "__main__":
                 plt.show()
     del reader['ID'] ##
     values = list(range(len(reader['Diagnosis'])))
+    desired_outputs = []
     for i in range(len(reader['Diagnosis'])):
         values[i] = 0 if reader['Diagnosis'][i] == 'B' else 1
+        desired_outputs.append(values[i])
     reader['Diagnosis'] = values
-    test = nn.NeuralNetwork(reader, 2, 10, 2)
-    test.run()
+    test = nn.NeuralNetwork(reader, 2, 10, 2, desired_outputs)
     test.__str__()
+    #test = nn.NeuralNetwork(reader, 2, 10, 2)
+    #test.run()
+    #test.__str__()
     
     #test_w = [0.3, 1.2, -0.4, 1.1]
     #print("weighted sum for {} = {}".format(test_w, nn.weighted_sum(test_w, 0.75)))
