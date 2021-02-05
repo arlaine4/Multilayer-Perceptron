@@ -1,18 +1,18 @@
 import numpy as np
+np.seterr(divide = 'ignore')
 import pandas as pd
 from sklearn import preprocessing
 
 class NeuralNetwork():
     def __init__(self, inputs, desired_ouputs, nb_hidden_layers, nb_hidden_elems, nb_outputs, test_or_train='train'):
         self.input_weights = None
-        self.biases = []
         self.nb_hidden = {'nb_layers' : nb_hidden_layers, 'nb_elem' : nb_hidden_elems}
-        self.input_data_scaling(inputs)
+        self.weights = [list for l in range(self.nb_hidden['nb_layers'] + 2)]
         self.output_matrix = np.array(desired_ouputs)
         self.nb_ouput_neurons = nb_outputs
         self.epoch = 20000
-        self.memory_weights = []
-        self.memory_biases = []
+        self.biases = [list for k in range(self.nb_hidden['nb_layers'])]
+        self.input_data_scaling(inputs)
         #self.biases = np.array((1, (self.nb_hidden['nb_layers'] * self.nb_hidden['nb_elem']) + self.nb_ouput_neurons + np.size(self.input_a)))
         #self.memory_weights = np.array((1, self.nb_hidden['nb_layers'] + 2))
         #self.memory_biases = np.array((1
@@ -30,7 +30,8 @@ class NeuralNetwork():
         self.input_a = new_mean_all[0]
         self.input_a = self.input_a.reshape(30, 1)
         self.input_weights = np.zeros((self.nb_hidden['nb_elem'][0], np.size(self.input_a)))
-        self.biases = np.ones((1, np.size(self.input_a)))
+        self.weights[0] = self.input_weights
+        self.biases[0] = np.ones((1, np.size(self.input_a)))
         for i in range(self.nb_hidden['nb_elem'][0]):
             self.input_weights[i] = xavier_init(np.size(self.input_a), self.nb_hidden['nb_elem'][0])
 
@@ -38,13 +39,14 @@ class NeuralNetwork():
         if mode == 'train':
             #for i in range(self.epoch):
             i = 0
-            #next_input = self.input_a @ self.input_weights + self.biases[0]
+            i_neuron_sum = weighted_sum(self.input_weights[0], self.input_a, self.biases[0])
 
 
     
-    def __str__(self):
+    def __str__(self, w=False):
         print("\033[1;3;4mInput activation \033[0m:\n\n{}\n\n".format(self.input_a))
-        print("\033[1;3;4mInput Weights \033[0m:\n\n{}\n\n".format(self.input_weights))
+        if w:
+            print("\033[1;3;4mInput Weights \033[0m:\n\n{}\n\n".format(self.input_weights))
         print("\033[1;3;4mDesired outputs \033[0m:\n\n{}\n\n".format(self.output_matrix))
 
     #---------------------------------------------------#
@@ -58,6 +60,12 @@ class NeuralNetwork():
 
     #                                                   #
     #---------------------------------------------------#
+
+def weighted_sum(weights, activation, biases):
+    sum_ = 0
+    for i in range(len(weights)):
+        sum_ += (weights[i] * activation[i]) + biases[0][i]
+    return sum_
 
 def xavier_init(size_layer, size_previous_layer):
     W = np.random.randn(1, size_layer) * np.sqrt(2 / size_previous_layer + size_layer)

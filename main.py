@@ -34,7 +34,7 @@ if __name__ == "__main__":
     del reader['Diagnosis']
     test = nn.NeuralNetwork(reader, desired_outputs, 2, [20, 20], 2, 'train')
     test.fit()
-    #test.__str__()
+    test.__str__()
     #test = nn.NeuralNetwork(reader, 2, 10, 2, desired_outputs)
     #test = nn.NeuralNetwork(reader, 2, 10, 2)
     #test.run()
