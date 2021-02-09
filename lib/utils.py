@@ -15,8 +15,20 @@ def get_min_max_scale(data):
 
 def separate_data(data):
     train = data.iloc[0:400]
+    true_train = []
+    for i in range(len(train)):
+        vec = []
+        for j in range(len(train.iloc[i])):
+            vec.append(train.iloc[i][j])
+        true_train.append(vec)
     test = data.iloc[400:]
-    return train, test
+    true_test = []
+    for i in range(len(test)):
+        vec = []
+        for j in range(len(test.iloc[i])):
+            vec.append(test.iloc[i][j])
+        true_test.append(vec)
+    return true_train, true_test
 
 def arg_parse():
     parser = argparse.ArgumentParser()
