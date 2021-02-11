@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+from sklearn import preprocessing
 import argparse
 import sys
 
@@ -13,6 +15,20 @@ def get_min_max_scale(data):
                 min_ = data.iloc[i][j]
     return [min_, max_]
 
+def scale_input_data(data):
+    input_a = np.array(data)
+    input_a = input_a.reshape(-1, 1)
+    mean_all = preprocessing.PowerTransformer()
+    mean_all = mean_all.fit(input_a)
+    mean_all = mean_all.transform(input_a)
+    mean_all = preprocessing.MinMaxScaler(feature_range=(-1, 1))
+    new_mean_all = mean_all.fit_transform(input_a)
+    last_values = []
+    for i in range(len(new_mean_all)):
+        last_values.append(float(new_mean_all[i]))
+    return last_values
+
+
 def separate_data(data):
     train = data.iloc[0:400]
     true_train = []
@@ -20,6 +36,7 @@ def separate_data(data):
         vec = []
         for j in range(len(train.iloc[i])):
             vec.append(train.iloc[i][j])
+        vec = scale_input_data(vec)
         true_train.append(vec)
     test = data.iloc[400:]
     true_test = []
@@ -27,36 +44,18 @@ def separate_data(data):
         vec = []
         for j in range(len(test.iloc[i])):
             vec.append(test.iloc[i][j])
+        vec = scale_input_data(vec)
         true_test.append(vec)
     return true_train, true_test
 
 def arg_parse():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--train', action='store_true', help='train the network')
+    parser.add_argument('-p', '--predict', action='store_true', help='launch network prediction test')
     parser.add_argument('-g', '--graph', action='store_true', help='Print historgrams')
     parser.add_argument('-c', '--color', action='store', help='histogram color')
-    parser.add_argument('-p', '--plot', action='store_true', help='print plot')
     options = parser.parse_args()
     return options
-
-def append_new_array(base_array, new_array):
-    new_array_casted = []
-    for i in range(len(new_array)):
-        new_array_casted.append(float(new_array[i]))
-    base_array.append(new_array_casted)
-    return base_array
-
-def create_multi_dim_array(nb_i_dim, size_j_dim, value):
-    new_array = []
-    for i in range(nb_i_dim):
-        new_array.append([])
-        for j in range(size_j_dim):
-            new_array[i].append(value)
-    return new_array
-
-def create_empty_array(nb_elems, value):
-    x = value
-    array = [x for i in range(nb_elems)]
-    return array
 
 def get_csv_infos():
     lst_names = ['ID', 'Diagnosis', 'Radius', 'Texture', 'Perimeter', 'Area', 'Smoothness', 'Compactness', \
@@ -72,7 +71,6 @@ def get_csv_infos():
         print("Error loading dataset.")
         sys.exit(0)
     return reader
-
 
 def parse_color_hist(color):
     if color == 'r':

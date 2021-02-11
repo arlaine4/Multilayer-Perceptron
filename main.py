@@ -4,10 +4,7 @@ import pandas as pd
 import numpy as np
 import sys
 from copy import deepcopy
-#from lib import utils, maths, neural_network as nn
-#from lib import utils, maths, neural as nn
-#from lib import utils, maths, n as nn
-from lib import utils, valerio as nn
+from lib import utils, neural_network as nn
 
 if __name__ == "__main__":
     args = utils.arg_parse()
@@ -27,35 +24,28 @@ if __name__ == "__main__":
                 plt.ylabel("Number of elements")
                 plt.show()
     del reader['ID'] ##
+
     values = list(range(len(reader['Diagnosis'])))
     desired_outputs = []
+    opposite = 0
     for i in range(len(reader['Diagnosis'])):
         values[i] = 0 if reader['Diagnosis'][i] == 'B' else 1
+        #opposite = 1 if values[i] == 0 else 0
         desired_outputs.append([values[i]])
     reader['Diagnosis'] = values
-    #desired_outputs = reader['Diagnosis']
-    if args.plot:
-        nn.scatter(reader)
     del reader['Diagnosis']
+
     train, test = utils.separate_data(reader)
-    #t = nn.NeuralNetwork(train, desired_outputs, 2, 20)
 
-    t = nn.MLP(30, [20, 20], 2)
-    t.train(train, desired_outputs, 10000, 0.1)
-    output = t.forward_propagate(train)
-    print(output)
-    #t = nn.NeuralNetwork(30, [20, 20], 2)
-    #target = desired_outputs[0]
-    #vec = np.zeros(len(train.iloc[0]))
-    #for i in range(len(train.iloc[0])):
-        #vec[i] = train.iloc[0][i]
-    #t_out = t.forward_propagation(vec)
-    #error = target - t_out
-    #t.back_propagation(error, True)
+    desired_train = desired_outputs[0:400]
+    desired_test = desired_outputs[400::]
 
-    #print("The network feedforward input is : {}".format(train.iloc[0]))
-    #t.__str__()
-    #nn.plot_training_test_samples(train, test)
-    #scale = utils.get_min_max_scale(train)
-    #nn.main_network([30, 20, 20, 2], train, test, desired_outputs, scale)
-    #del reader['Diagnosis']
+    network = None
+    if not args.train and not args.predict:
+        print("You need to either specify train or predict mode")
+        sys.exit(0)
+    if args.train:
+        network = nn.main_neural(train, desired_train,70)
+    elif args.predict and network is not None:
+        print("bonsoir")
+        predict.main_predict(desired_test, test, network)
