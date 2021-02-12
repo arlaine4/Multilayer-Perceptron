@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import sys
 from copy import deepcopy
-from lib import utils, neural_network as nn
+#from lib import utils, neural_network as nn
+from lib import utils, test as nn
 
 if __name__ == "__main__":
     args = utils.arg_parse()
@@ -41,11 +42,12 @@ if __name__ == "__main__":
     desired_test = desired_outputs[400::]
 
     network = None
-    if not args.train and not args.predict:
+    if args.train:
+        nn.main_neural(train, test, desired_train, desired_test)
+    """if not args.train and not args.predict:
         print("You need to either specify train or predict mode")
         sys.exit(0)
     if args.train:
         network = nn.main_neural(train, desired_train,70)
     elif args.predict and network is not None:
-        print("bonsoir")
-        predict.main_predict(desired_test, test, network)
+        predict.main_predict(desired_test, test, network)"""

@@ -1,31 +1,41 @@
 import math
 import numpy as np
+import pandas as pd
+from lib import utils
 
-def main_neural(train, desired_outputs, epoch):
+def main_neural(train, desired_outputs, epoch, mode):
     net = Network([30, 20, 20, 1])
     Neuron.eta = 0.1
     Neuron.alpha = 0.1
-    for i in range(epoch):
-        err = 0
-        for j in range(len(train)):
-            net.setInput(train[j])
+    dataframe = None
+    if mode == "train":
+        for i in range(epoch):
+            err = 0
+            for j in range(len(train)):
+                net.setInput(train[j])
+                net.feedForward()
+                net.backPropagate(desired_outputs[j])                
+                err = err + net.getError(desired_outputs[j])
+            print("error: {} at epoch : {}".format(err / len(train), i))
+        dataframe = utils.export_network_data(net.layers)
+        #dataframe = pd.DataFrame(np.concatenate(net.layers))
+        #print(dataframe)
+        #file_ = open("network_save.csv", "w")
+        #dataframe.to_csv(file_, index=False)
+        return net
+    elif mode == "test":
+        error = 0
+        for i in range(len(test)):
+            net.setInput(test[i])
             net.feedForward()
-            net.backPropagate(desired_outputs[j])
-            err = err + net.getError(desired_outputs[j])
-        print("error: {} at epoch : {}".format(err / len(train), i))
-    return net
-    """error = 0
-    for i in range(len(test)):
-        net.setInput(test[i])
-        net.feedForward()
-        net.backPropagate(desired_out_test[i])
-        res = net.getResults()
-        if (res[0] > 0.5 and desired_out_test[i][0] == 1) or \
-                (res[0] < 0.5 and desired_out_test[i][0] == 0):
-                error += 1
-        print("Network predicted \033[1m{:.3f}\033[0m for \033[1m{}\033[0m".format(res[0], desired_out_test[i][0]))
-    print("Correctly predicted {} out of {}".format(error, i))
-    print("Percision = {}%".format((error / len(test)) * 100))"""
+            net.backPropagate(desired_out_test[i])
+            res = net.getResults()
+            if (res[0] > 0.5 and desired_out_test[i][0] == 1) or \
+                    (res[0] < 0.5 and desired_out_test[i][0] == 0):
+                    error += 1
+            print("Network predicted \033[1m{:.3f}\033[0m for \033[1m{}\033[0m".format(res[0], desired_out_test[i][0]))
+        print("Correctly predicted {} out of {}".format(error, i))
+        print("Percision = {}%".format((error / len(test)) * 100))
 
 class Connection:
     """Will keep the infromation between the connection of two neurons"""
@@ -122,6 +132,7 @@ class Network:
             layer[-1].output = 1
             #layer[-1].setOutput(1)
             self.layers.append(layer)
+            #file_.write(layer)
 
     def setInput(self, inputs):
         for i in range(len(inputs)):

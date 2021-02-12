@@ -4,6 +4,16 @@ from sklearn import preprocessing
 import argparse
 import sys
 
+def export_network_data(layers):
+    lst_elems = []
+    for i in range(len(layers)):
+        print("Layers[{}] : ".format(i))
+        for elem in layers[i]:
+            print("Output : ", elem.output)
+            for dendron in elem.dendrons:
+                print("weight : {}\ndWeight : {}\nconnectedNeuron : \n\t{}\n\t{}\n\t{}".format(dendron.weight, dendron.dWeight, dendron.connectedNeuron.output, dendron.connectedNeuron.error, dendron.connectedNeuron.gradient))
+    return lst_elems
+
 def get_min_max_scale(data):
     min_ = 0
     max_ = 0
